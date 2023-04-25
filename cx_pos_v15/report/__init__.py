@@ -1,0 +1,1 @@
+from . import cx_pos_payments_report

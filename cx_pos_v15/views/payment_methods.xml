@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pos_payment_method_form_inherit" model="ir.ui.view">
+            <field name="name">pos.payment.method.form.inherit</field>
+            <field name="model">pos.payment.method</field>
+            <field name="inherit_id" ref="point_of_sale.pos_payment_method_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="is_divisa"/>
+                    <field name="divisa_name" attrs="{'invisible': [('is_divisa','=',False)],
+																						'required':[('is_divisa','=',True)]}"/>
+                    <field name="divisa_rate" readonly="True"/>
+                    <field name="IGTF_tax_percent"  attrs="{'invisible': [('is_divisa','=',False)],
+																									'required':[('is_divisa','=',True)]}" />
+                    <field name="igtf_journal_id" attrs="{'invisible': [('is_divisa','=',False)],
+																								'required':[('is_divisa','=',True)]}"/>
+                    <field name="register_id"/>
+                    <button
+                        class="btn btn-primary oe_highlight oe_read_only"
+                        aria-label = "Register Payment Method"
+                        title = "Register"
+                        style = "font-size: 12px;"
+                        onclick = "registerPaymentMethod()">Register</button>
+                </xpath>
+                <xpath expr="//form" position="inside">
+                    <script src="/cx_pos_v15/static/src/js/register_payment_method.js"></script>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_pos_payment_method_tree_inherit" model="ir.ui.view">
+            <field name="name">pos.payment.method.tree.inherit</field>
+            <field name="model">pos.payment.method</field>
+            <field name="inherit_id" ref="point_of_sale.pos_payment_method_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="is_divisa"/>
+                    <field name="divisa_name" 
+										 attrs="{'invisible': [('is_divisa','=',False)]}"/>
+                    <field name="IGTF_tax_percent" 
+										 attrs="{'invisible': [('is_divisa','=',False)]}" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

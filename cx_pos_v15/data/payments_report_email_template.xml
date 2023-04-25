@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="payments_report_email" model="mail.template">
+    <field name="name">Reporte de Pagos Adjunto</field>
+    <field name="email_from">{{ (user.email_formatted) }}</field>
+    <field name="email_to"></field>
+    <field name="report_template" ref="cx_pos_v15.pos_payments_report_cx"/>
+    <field name="report_name">Reporte de Pagos</field>
+    <field name="subject">{{ user.company_id.name }} Reporte de Pagos del {{ datetime.datetime.today().date() }}</field>
+    <field name="model_id" ref="point_of_sale.model_pos_session"/>
+    <field name="body_html" type="html">
+      <div style="margin: 0px; padding: 0px;">
+        <p style="margin: 0px; padding: 0px; font-size: 13px;">
+            Hola,
+          <br/>
+          <br/>
+            Es un agrado informarte que tenemos los detalles de los pagos realizados el día
+          <t t-out="datetime.datetime.today().date()"/>.
+          <br/>
+          <br/>
+            Adjuntamos su reporte de pagos para mayor información.
+          <br/>
+          <br/>
+            Muchas gracias,
+          <t t-if="user.signature">
+            <br />
+            <t t-out="user.signature or ''">--
+              <br/>{{ user.name }}
+            </t>
+          </t>
+        </p>
+      </div>
+    </field>
+  </record>
+</odoo>

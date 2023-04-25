@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pos_session_form_inherit" model="ir.ui.view">
+            <field name="name">pos.session.form.inherit</field>
+            <field name="model">pos.session</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group[1]" position="after">
+                    <group string="Print Z Report" attrs = "{'invisible':[('state','!=','closed')]}">
+                        <field name="z_report_per_date" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                        <field name="z_report_per_number" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                        <field name="z_report_start_date" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                        <field name="z_report_end_date" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                        <field name="z_report_start_number" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                        <field name="z_report_end_number" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                        <field name="z_report_mode" attrs = "{'invisible':[('state','!=','closed')]}"/>
+                    </group>
+                    <button
+                        class="btn btn-primary oe_highlight oe_read_only"
+                        aria-label = "Print Z Report"
+                        title = "Print Z Report"
+                        style = "font-size: 12px;"
+                        attrs = "{'invisible':[('state','!=','closed')]}"
+                        onclick = "printZReport()">Print Z Report</button>
+                </xpath>
+                <xpath expr="//button[@id='validate_closing_control']"  position="after">
+                    <button
+                        class="btn btn-primary oe_highlight oe_read_only"
+                        string="Print X Report"
+                        aria-label = "Print X Report"
+                        title = "Print X Report"
+                        style = "font-size: 12px;"
+                        attrs = "{'invisible':[('state','!=','closed')]}"
+                        onclick = "printXReport()">Print X Report</button>
+                    <button
+                        class="btn btn-primary oe_highlight oe_read_only"
+                        string="Close Cashier"
+                        aria-label = "Close Cashier"
+                        title = "Close Cashier"
+                        style = "font-size: 12px;"
+                        attrs = "{'invisible':[('state','!=','closed')]}"
+                        onclick = "closeCashier()">Close Cashier</button>
+                    <button
+                        class="btn btn-primary oe_highlight oe_read_only"
+                        string="Send Email"
+                        name = "send_email"
+                        type="object"
+                        attrs = "{'invisible':[('state','!=','closed')]}"/>
+                </xpath>
+                <xpath expr="//form" position="inside">
+                    <script src="/cx_pos_v15/static/src/js/print_z_report.js"></script>
+                    <script src="/cx_pos_v15/static/src/js/print_x_report.js"></script>
+                    <script src="/cx_pos_v15/static/src/js/close_cashier.js"></script>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="cx_pos_config_view_form2">
+            <field name="name">cx_pos.config.view.form2</field>
+            <field name="model">pos.config</field>
+            <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='row mt16 o_settings_container'][3]" position="after">
+                    <h2 name="emails">Correos Electrónicos</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Destinatarios de Correo Electrónico</span>
+                                <div class="text-muted">
+                                    Habilitar empleados para recivir correos electrónicos con reportes del punto de venta.
+                                </div>
+                                <div class="content-group mt16">
+                                    <field name="email_recipient_employee_ids"
+                                        colspan="4" 
+                                        nolabel="1" 
+                                        widget="many2many_tags" 
+                                        options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

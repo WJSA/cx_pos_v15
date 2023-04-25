@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="cx_pos_payments_report">
+    <t t-call="web.html_container">
+      <t t-call="web.external_layout">
+        <div class="page">
+          <h1 class="mt15 text-center">Reporte de Pagos del <span t-esc="date"/></h1>
+          <t t-foreach="payment_method_ids" t-as="pm">
+            <h4 class="mt15">
+              <t t-esc="pm.name"/>
+            </h4>
+            <t t-set="lines" t-value="docs.filtered(lambda l: l.payment_method_id.id == pm.id)"/>
+            <table class="table table-sm o_main_table">
+              <thead>
+                <tr>
+                  <th name="th_date">Fecha y Hora</th>
+                  <th name="th_order">Pedido</th>
+                  <th name="th_client">Cliente</th>
+                  <th name="th_amount">Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="lines" t-as="l">
+                  <tr>
+                    <td>
+                      <t t-esc="l.payment_date"/>
+                    </td>
+                    <td>
+                      <t t-esc="l.pos_order_id.name"/>
+                    </td>
+                    <td>
+                      <t t-if="l.pos_order_id.partner_id">
+                        <t t-esc="l.pos_order_id.partner_id.name"/>
+                      </t>
+                      <t t-else="">
+                      </t>
+                    </td>
+                    <td t-if="l.amount">
+                      <span t-field="l.amount" options='{"widget": "float", "precision": 0}'/>
+                    </td>
+                  </tr>
+                </t>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td style="text-align: right; text-decoration: underline;">
+                      <strong>Total: </strong>
+                  </td>
+                  <td>
+                    <t t-set="total" t-value="sum(lines.mapped('amount'))"/>
+                    <span style="text-decoration: underline;">
+                      <strong>
+                      <t t-esc="'{:.2f}'.format(total).replace('.',',')"/>
+                      <t t-esc="currency.symbol"/>
+                      </strong>
+                    </span>
+                </td>
+                </tr>
+              </tbody>
+            </table>
+          </t>
+        </div>
+      </t>
+    </t>
+  </template>
+</odoo>

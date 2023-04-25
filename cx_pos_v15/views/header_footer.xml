@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pos_header_footer_tree" model="ir.ui.view">
+            <field name="name">pos.header.footer.tree</field>
+            <field name="model">pos.header.footer</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="header"/>
+                    <field name="footer"/> 
+                </tree>
+            </field>
+        </record>
+
+        <record id="pos_header_footer_form" model="ir.ui.view">
+            <field name="name">pos.header.footer.form</field>
+            <field name="model">pos.header.footer</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" invisible="True"/>
+                                <field name="header"/>
+                                <field name="footer"/>  
+                                <button
+                                class="btn btn-primary oe_highlight oe_read_only"
+                                aria-label = "Register Header and Footer"
+                                title = "Register Header and Footer"
+                                style = "font-size: 12px;"
+                                onclick = "registerHeaderAndFooter()">Register Header and Footer</button>
+                            </group>
+                        </group>
+                    </sheet>
+                    <script src="/cx_pos_v15/static/src/js/register_header_footer.js"></script>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_pos_header_footer">
+            <field name="name">Header and Footer</field>
+            <field name="res_model">pos.header.footer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help">Register header and footer in fiscal printer</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_pos_header_footer_tree">
+                <field name="sequence" eval="11"/>
+                <field name="view_mode">tree</field>
+                <field name="view_id" ref="pos_header_footer_tree"/>
+                <field name="act_window_id" ref="action_pos_header_footer"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_pos_header_footer_form">
+                <field name="sequence" eval="12"/>
+                <field name="view_mode">form</field>
+                <field name="view_id" ref="pos_header_footer_form"/>
+                <field name="act_window_id" ref="action_pos_header_footer"/>
+        </record>
+
+
+        <menuitem id="pos_header_footer_menu" 
+                name="Header and Footer" 
+                action="action_pos_header_footer"
+                parent="point_of_sale.menu_point_config_product"
+                sequence="101"/>
+    </data>
+</odoo>

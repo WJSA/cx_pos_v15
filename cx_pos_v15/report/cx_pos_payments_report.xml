@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<report 
+		id="pos_payments_report_cx" 
+		model="cx_pos_v15.wizard" 
+		string="Reporte de Pagos" 
+		report_type="qweb-pdf" 
+		name="cx_pos_v15.cx_pos_payments_report" 
+		file="cx_pos_v15.cx_pos_payments_report" 
+	/>
+</odoo>

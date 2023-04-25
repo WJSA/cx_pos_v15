@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pos_cashier_tree" model="ir.ui.view">
+            <field name="name">pos.cashier.tree</field>
+            <field name="model">pos.cashier</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="cashier_id"/>
+                    <field name="register_id"/>
+                    <field name="cashier_code"/> 
+                </tree>
+            </field>
+        </record>
+
+        <record id="pos_cashier_form" model="ir.ui.view">
+            <field name="name">pos.cashier.form</field>
+            <field name="model">pos.cashier</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" invisible="True"/>
+                                <field name="cashier_id"/>
+                                <field name="register_id"/>
+                                <field name="cashier_code"/>
+                                <button
+                                class="btn btn-primary oe_highlight oe_read_only"
+                                aria-label = "Register Cashier"
+                                title = "Register Cashier"
+                                style = "font-size: 12px;"
+                                onclick = "registerCashier()">Register Cashier</button>
+                            </group>
+                        </group>
+                    </sheet>
+                    <script src="/cx_pos_v15/static/src/js/register_cashier.js"></script>
+                </form>
+            </field>
+        </record>
+
+        <record id="pos_cashier_kanban" model="ir.ui.view">
+            <field name="name">pos.cashier.kanban</field>
+            <field name="model">pos.cashier</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="cashier_id"/>
+                    <field name="register_id"/>
+                    <field name="cashier_code"/> 
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_project_kanban_main" style="min-height: 80px;">
+                                    <div class="o_kanban_card_content">
+                                        <div class="o_kanban_primary_left">
+                                            <div class="o_primary">
+                                                <span ><strong><t t-esc="record.cashier_id.value" style="margin-top:3px;display: block;"/></strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_pos_cashier">
+            <field name="name">Cashier</field>
+            <field name="res_model">pos.cashier</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help">Register cashier in fiscal printer</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_pos_cashier_tree">
+                <field name="sequence" eval="12"/>
+                <field name="view_mode">tree</field>
+                <field name="view_id" ref="pos_cashier_tree"/>
+                <field name="act_window_id" ref="action_pos_cashier"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_pos_cashier_form">
+                <field name="sequence" eval="11"/>
+                <field name="view_mode">form</field>
+                <field name="view_id" ref="pos_cashier_form"/>
+                <field name="act_window_id" ref="action_pos_cashier"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_pos_cashier_kanban">
+                <field name="sequence" eval="10"/>
+                <field name="view_mode">kanban</field>
+                <field name="view_id" ref="pos_cashier_kanban"/>
+                <field name="act_window_id" ref="action_pos_cashier"/>
+        </record>
+
+        <menuitem id="pos_cashier_menu" 
+                name="Cashier" 
+                action="action_pos_cashier"
+                parent="point_of_sale.menu_point_config_product"
+                sequence="100"/>
+        
+        <record model="ir.ui.view" id="cx_pos_config_view_form">
+            <field name="name">cx_pos.config.view.form</field>
+            <field name="model">pos.config</field>
+            <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='iface_big_scrollbars']" position="after">
+                    <div class="col-12 col-lg-6 o_setting_box" id="refund_allowed_employees">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Botón de Nota de Créito</span>
+                            <div class="text-muted">
+                                Habilitar empleados para poder emitir notas de crédito.
+                            </div>
+                            <div class="content-group mt16">
+                               <field name="refund_allowed_employee_ids"
+                                    colspan="4" 
+                                    nolabel="1" 
+                                    widget="many2many_tags" 
+                                    options="{'no_create': True}"/>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

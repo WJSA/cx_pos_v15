@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="wizard_cx_pos_payments_report_view" model="ir.ui.view">
+			<field name="name">cx_pos_payments_report.wizard.view</field>
+			<field name="model">cx_pos_v15.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<group>
+						<group name="group_left">
+							<field name="date" />
+						</group>
+					</group>
+					<footer>
+						<button name="get_report" string="Imprimir" type="object" class="oe_right oe_highlight" />
+						<button special="cancel" string="Cancelar" class="oe_right" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_cx_pos_v15_wizard">
+			<field name="name">Reporte de Pagos</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">cx_pos_v15.wizard</field>
+			<field name="view_id" ref="wizard_cx_pos_payments_report_view" />
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+		<menuitem id="menu_cx_pos_payments_report_view_view" 
+							name="Reporte de Pagos" 
+							parent="point_of_sale.menu_point_rep" 
+							action="action_cx_pos_v15_wizard" 
+							sequence="100" />
+	</data>
+</odoo>

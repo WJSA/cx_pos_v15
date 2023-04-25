@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="cx_pos_view_pos_form_extended">
+            <field name="name">cx_pos.view.order.form.extend</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_tax']" position="after">
+                    <field name="IGTF_tax" force_save="1" widget="monetary" attrs="{'invisible': [('IGTF_tax','=',0)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='amount']" position="after">
+                    <field name="divisa_amount" force_save="1"/>
+                    <field name="tax_IGTF" force_save="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pos_cashier,pos.cashier,model_pos_cashier,,1,1,1,1
+access_pos_header_footer,pos.header.footer,model_pos_header_footer,,1,1,1,1
+access_pos_session_wizard,cx_pos_v15.wizard,model_cx_pos_v15_wizard,,1,1,1,1

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Start Cashier Button -->
+    <t t-name="StartCashier" owl="1">
+        <span class="control-button"
+              t-on-click="onClick">
+            <i class="fa fa"></i>
+            <span>Start Cashier</span>
+        </span>
+    </t>
+    <!-- Print Receipt Button -->
+    <t t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('print')]" position="replace">
+            <span class="button" t-on-click="printByApi">
+                <i class="fa fa-print"></i>
+                <span>Print Receipt</span>
+            </span>
+        </xpath>
+    </t>
+    <!-- Insert Commentary Button -->
+    <t t-inherit="point_of_sale.PaymentScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('payment-controls')]" position="inside">
+            <br/>
+            <div>
+                <div class="button"
+                    t-on-click="receiptComentary">
+                    <i class="fa fa-print"/>Comment
+                </div>
+            </div>
+        </xpath>
+    </t>
+    <!-- Override Payment Screen -->
+    <t t-inherit="point_of_sale.PaymentScreenPaymentLines" t-inherit-mode="extension">
+        <!-- Selected Paymentline with divisa-->
+        <xpath expr="//div[@class='paymentline selected']" position="replace">
+            <t t-if="line.payment_method.is_divisa">
+                <div class="paymentline selected"
+                    style="line-height: 35px;"
+                    t-att-class="selectedLineClass(line)"
+                    t-on-click="trigger('select-payment-line', { cid: line.cid })">
+                    <div>
+                        <div style="display: flex;">
+                            <div class="payment-name">
+                                <t t-esc="line.payment_method.name" />
+                            </div>
+                            <div class="payment-amount">
+                                <t t-if="line and line.payment_status and ['done', 'waitingCard', 'waiting', 'reversing', 'reversed'].includes(line.payment_status)">
+                                    <t t-esc="env.pos.format_currency_no_symbol(line.get_amount())" />
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="env.pos.format_currency_no_symbol(line.get_divisa_amount())"/>
+                                    <t t-esc="' ' + line.get_divisa_symbol()"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="payment-amount" style="text-align: center;">
+                            <t t-if="line and line.payment_status and ['done', 'waitingCard', 'waiting', 'reversing', 'reversed'].includes(line.payment_status)">
+                                <t t-esc="env.pos.format_currency(line.get_amount())" />
+                                </t>
+                            <t t-else="">
+                                <t t-esc="env.pos.format_currency(formatLineAmount(line))" />
+                                </t>
+                        </div>
+                        <div class="payment-amount" style="text-align: center;">
+                            IGTF:
+                            <t t-esc="env.pos.format_currency(line.get_tax_IGTF())"/>
+                        </div>
+                    </div>
+                    <t t-if="!line.payment_status or !['done', 'reversed'].includes(line.payment_status)">
+                        <div class="delete-button"
+                            t-on-click="trigger('delete-payment-line', { cid: line.cid })"
+                            aria-label="Delete" title="Delete">
+                            <i class="fa fa-times-circle" />
+                        </div>
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="paymentline selected"
+                    t-att-class="selectedLineClass(line)"
+                    t-on-click="trigger('select-payment-line', { cid: line.cid })">
+                    <div class="payment-name">
+                        <t t-esc="line.payment_method.name" />
+                    </div>
+                    <div class="payment-amount">
+                        <t t-if="line and line.payment_status and ['done', 'waitingCard', 'waiting', 'reversing', 'reversed'].includes(line.payment_status)">
+                            <t t-esc="env.pos.format_currency_no_symbol(line.get_amount())" />
+                        </t>
+                        <t t-else="">
+                            <t t-esc="formatLineAmount(line)" />
+                        </t>
+                    </div>
+                    <t t-if="!line.payment_status or !['done', 'reversed'].includes(line.payment_status)">
+                        <div class="delete-button"
+                            t-on-click="trigger('delete-payment-line', { cid: line.cid })"
+                            aria-label="Delete" title="Delete">
+                            <i class="fa fa-times-circle" />
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+        <!-- Paymentlines with divisa-->
+        <xpath expr="//div[@class='paymentline']" position="replace">
+            <t t-if="line.payment_method.is_divisa">
+                <div class="paymentline"
+                    style="line-height: 35px;"
+                    t-att-class="unselectedLineClass(line)"
+                    t-on-click="trigger('select-payment-line', { cid: line.cid })">
+                    <div>
+                        <div style="display: flex;">
+                            <div class="payment-name">
+                                <t t-esc="line.payment_method.name" />
+                            </div>
+                            <div class="payment-amount">
+                                <t t-if="line and line.payment_status and ['done', 'waitingCard', 'waiting', 'reversing', 'reversed'].includes(line.payment_status)">
+                                    <t t-esc="env.pos.format_currency_no_symbol(line.get_amount())" />
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="env.pos.format_currency_no_symbol(line.get_divisa_amount())"/>
+                                    <t t-esc="' ' + line.get_divisa_symbol()"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="payment-amount" style="text-align: center;">
+                            <t t-if="line and line.payment_status and ['done', 'waitingCard', 'waiting', 'reversing', 'reversed'].includes(line.payment_status)">
+                                <t t-esc="env.pos.format_currency(line.get_amount())" />
+                                </t>
+                            <t t-else="">
+                                <t t-esc="env.pos.format_currency(formatLineAmount(line))" />
+                                </t>
+                        </div>
+                        <div class="payment-amount" style="text-align: center;">
+                           IGTF:
+                            <t t-esc="env.pos.format_currency(line.get_tax_IGTF())"/>
+                        </div>
+                    </div>
+                    <t t-if="!line.payment_status or !['done', 'reversed'].includes(line.payment_status)">
+                        <div class="delete-button"
+                            t-on-click="trigger('delete-payment-line', { cid: line.cid })"
+                            aria-label="Delete" title="Delete">
+                            <i class="fa fa-times-circle" />
+                        </div>
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="paymentline"
+                    t-att-class="unselectedLineClass(line)"                    
+                    t-on-click="trigger('select-payment-line', { cid: line.cid })">
+                    <div class="payment-name">
+                        <t t-esc="line.payment_method.name" />
+                    </div>
+                    <div class="payment-amount">
+                        <t t-if="line and line.payment_status and ['done', 'waitingCard', 'waiting', 'reversing', 'reversed'].includes(line.payment_status)">
+                            <t t-esc="env.pos.format_currency_no_symbol(line.get_amount())" />
+                        </t>
+                        <t t-else="">
+                            <t t-esc="formatLineAmount(line)" />
+                        </t>
+                    </div>
+                    <t t-if="!line.payment_status or !['done', 'reversed'].includes(line.payment_status)">
+                        <div class="delete-button"
+                            t-on-click="trigger('delete-payment-line', { cid: line.cid })"
+                            aria-label="Delete" title="Delete">
+                            <i class="fa fa-times-circle" />
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    <!-- Override Payment Method Buttons to add divisa rate amount -->
+    <t t-inherit="point_of_sale.PaymentMethodButton" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('paymentmethod')]/div[hasclass('payment-name')]" position="after">
+            <t t-if="props.paymentMethod.is_divisa">
+                <div class="payment-amount">
+                    <t t-if="props.paymentMethod.divisa_rate">
+                        <t t-esc="env.pos.format_currency(props.paymentMethod.divisa_rate)"/>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    <!-- Override Payment Screen Status to display IGTF  -->
+    <t t-inherit="point_of_sale.PaymentScreenStatus" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('payment-status-total-due')]" position="before">
+            <t t-if="currentOrder.get_IGTF_tax_for_order() > 0">
+                <div class="payment-status-total-igtf">
+                    <span class="label">IGTF</span>
+                    <strong>
+                        <span>
+                            <t t-esc="totalIGTF" />
+                        </span>
+                    </strong>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    <!-- Override Product Screen to add total amount in $ -->
+    <t t-inherit="point_of_sale.OrderWidget" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('order-container')]" position="replace">
+            <div class="order-container" t-ref="scrollable">
+                <div class="order">
+                    <t t-if="orderlinesArray.length === 0" >
+                        <div class='order-empty'>
+                            <i class='fa fa-shopping-cart' role="img" aria-label="Shopping cart"
+                               title="Shopping cart"/>
+                            <h1>This order is empty</h1>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <ul class="orderlines">
+                            <t t-foreach="orderlinesArray" t-as="orderline" t-key="orderline.id">
+                                <Orderline line="orderline" />
+                            </t>
+                        </ul>
+                        <OrderSummary total="state.total" tax="state.tax" total_divisa="state.total_divisa"/>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+    </t>
+    <t t-inherit="point_of_sale.OrderSummary" t-inherit-mode="extension">
+        <xpath expr="//div[@class='summary clearfix']/div[hasclass('line')]/div[@class='entry total']/div[hasclass('subentry')]" position="after">
+            <t t-if="props.total_divisa">
+                <br/>
+                <span class="badge">Total: </span>
+                <span class="value">
+                    <t t-esc="props.total_divisa" />
+                </span>
+            </t>
+        </xpath>
+    </t>
+    <!-- Pop up IGTF -->
+    <t t-name="ConfirmPopupIGTF" owl="1">
+        <div role="dialog" class="modal-dialog">
+            <Draggable>
+                <div class="popup popup-confirm">
+                    <header class="title drag-handle">
+                        <t t-esc="props.title" />
+                    </header>
+                    <main class="body">
+                        <t t-esc=" props.body" />
+                    </main>
+                    <footer class="footer">
+                        <div class="button confirm" t-on-click="confirm">
+                            <t t-esc="props.confirmText" />
+                        </div>
+                    </footer>
+                </div>
+            </Draggable>
+        </div>
+    </t>
+    <!-- Override client details screen -->
+    <t t-inherit="point_of_sale.ClientDetailsEdit" t-inherit-mode="extension">
+        <xpath expr="//div[@class='client-details-box clearfix']" position="replace">
+            <div class="client-details-box clearfix">
+                <div class="client-details-right">
+                    <div class="client-detail">
+                        <span class="label">Street</span>
+                        <input class="detail client-address-street" name="street"
+                               t-on-change="captureChange" t-att-value="props.partner.street || ''"
+                               placeholder="Street" />
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">City</span>
+                        <input class="detail client-address-city" name="city"
+                               t-on-change="captureChange" t-att-value="props.partner.city || ''"
+                               placeholder="City" />
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">Postcode</span>
+                        <input class="detail client-address-zip" name="zip"
+                               t-on-change="captureChange" t-att-value="props.partner.zip || ''"
+                               placeholder="ZIP" />
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">State</span>
+                        <select class="detail client-address-states needsclick" name="state_id"
+                                t-on-change="captureChange">
+                            <option value="">None</option>
+                            <t t-foreach="env.pos.states" t-as="state" t-key="state.id">
+                                <option t-if="props.partner.country_id[0] == state.country_id[0]"
+                                        t-att-value="state.id"
+                                        t-att-selected="props.partner.state_id ? ((state.id === props.partner.state_id[0]) ? true : undefined) : undefined">
+                                    <t t-esc="state.name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">Country</span>
+                        <select class="detail client-address-country needsclick" name="country_id"
+                                t-on-change="captureChange">
+                            <option value="">None</option>
+                            <t t-foreach="env.pos.countries" t-as="country" t-key="country.id">
+                                <option t-att-value="country.id"
+                                        t-att-selected="props.partner.country_id ? ((country.id === props.partner.country_id[0]) ? true : undefined) : undefined">
+                                    <t t-esc="country.name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+                <div class="client-details-left">
+                    <div class="client-detail">
+                        <span class="label">RIF</span>
+                        <input class="detail vat" name="vat" t-on-change="captureChange"
+                               t-att-value="props.partner.vat || ''" />
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">Language</span>
+                        <select class="detail client-lang needsclick" name="lang"
+                                t-on-change="captureChange">
+                            <t t-foreach="env.pos.langs" t-as="lang" t-key="lang.id">
+                                <option t-att-value="lang.code"
+                                        t-att-selected="props.partner.lang ? ((lang.code === props.partner.lang) ? true : undefined) : lang.code === env.pos.user.lang? true : undefined">
+                                    <t t-esc="lang.name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">Email</span>
+                        <input class="detail client-email" name="email" type="email"
+                               t-on-change="captureChange"
+                               t-att-value="props.partner.email || ''" />
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">Phone</span>
+                        <input class="detail client-phone" name="phone" type="tel"
+                               t-on-change="captureChange"
+                               t-att-value="props.partner.phone || ''" />
+                    </div>
+                    <div class="client-detail">
+                        <span class="label">Barcode</span>
+                        <input class="detail barcode" name="barcode" t-on-change="captureChange"
+                               t-att-value="props.partner.barcode || ''" />
+                    </div>
+                    <div t-if="env.pos.pricelists.length gt 1" class="client-detail">
+                        <span class="label">Pricelist</span>
+                        <select class="detail needsclick" name="property_product_pricelist"
+                                t-on-change="captureChange">
+                            <t t-foreach="env.pos.pricelists" t-as="pricelist"
+                               t-key="pricelist.id">
+                                <option t-att-value="pricelist.id"
+                                        t-att-selected="props.partner.property_product_pricelist ? (pricelist.id === props.partner.property_product_pricelist[0] ? true : false) : false">
+                                    <t t-esc="pricelist.display_name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

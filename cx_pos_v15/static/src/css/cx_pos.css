@@ -1,0 +1,11 @@
+.pos .paymentline {
+    display: flex;
+    align-items: center;
+}
+
+.payment-status-total-igtf {
+    font-size: 17px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    color: #5c5c5cd1;
+}
